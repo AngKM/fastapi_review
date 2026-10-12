@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 from enum import Enum
+from pydantic import BaseModel
 app = FastAPI()
 
 fake_item_db = [{"item_name": "Buger", "price": 10.99}, {"item_name": "Pizza", "price": 15.99}, {"item_name": "Ice Cream", "price": 5.99}, {"item_name": "Cake", "price": 20.99}, {"item_name": "Pasta", "price": 12.99}]
@@ -58,3 +59,13 @@ async def get_model(model_name: ModelName):
 @app.get("/files/{file_path:path}")
 async def read_file(file_path:str):
     return{'file_path': file_path}
+
+class Item(BaseModel):
+    item_name: str
+    price: float
+    tax: float|None = None
+    description: str|None = None
+
+@app.post("/items/")
+async def create_item(item: Item):
+    return item
